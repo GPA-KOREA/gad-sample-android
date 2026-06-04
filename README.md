@@ -1,8 +1,8 @@
 # GAD SDK 연동하기
 
 - 이 프로젝트는 GAD SDK를 적용한 샘플앱으로 아래 가이드 한 내용을 포함하고 있습니다.
-- GAD 오퍼월 사이트에 앱 등록은 [GAD 미디어 설정하기](https://github.com/GPA-KOREA/gad-sample-android/blob/master/guide_media.md#gad-%EB%AF%B8%EB%94%94%EC%96%B4-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0) 페이지를 참고 바랍니다.
-- API 문서는 [GAD API DOCUMENT](https://github.com/GPA-KOREA/gad-sample-android/blob/main/api-doc.md#gad-api-document), [CPA 연동](https://github.com/GPA-KOREA/gad-sample-android/blob/master/guide_cpa.md#gad-cpa-%EC%97%B0%EB%8F%99-%EA%B0%80%EC%9D%B4%EB%93%9C) 페이지를 참고 바랍니다.
+- GAD 오퍼월 사이트에 앱 등록은 [GAD 미디어 설정하기](https://github.com/GPA-KOREA/gad-sample-android/blob/main/guide_media.md#gad-%EB%AF%B8%EB%94%94%EC%96%B4-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0) 페이지를 참고 바랍니다.
+- API 문서는 [GAD API DOCUMENT](https://github.com/GPA-KOREA/gad-sample-android/blob/main/api-doc.md#gad-api-document), [CPA 연동](https://github.com/GPA-KOREA/gad-sample-android/blob/main/guide_cpa.md#gad-cpa-%EC%97%B0%EB%8F%99-%EA%B0%80%EC%9D%B4%EB%93%9C) 페이지를 참고 바랍니다.
 
 
 ## Gradle 설정
@@ -75,6 +75,6 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-- 광고 참여를 완료하면 [미디어에 등록된 URL로 포스트백](https://github.com/GPA-KOREA/gad-sample-android/blob/master/guide_media.md#%EB%AF%B8%EB%94%94%EC%96%B4-%EC%97%B0%EB%8F%99-%EC%A0%95%EB%B3%B4-%EC%9E%85%EB%A0%A5%ED%95%98%EA%B8%B0)을 전송합니다.
-- 링크 : [포스트백 API DOCUMENT](https://github.com/GPA-KOREA/gad-sample-android/blob/master/api-doc.md#%ED%8F%AC%EC%8A%A4%ED%8A%B8%EB%B0%B1)
+- 광고 참여를 완료하면 [미디어에 등록된 URL로 포스트백](https://github.com/GPA-KOREA/gad-sample-android/blob/main/guide_media.md#%EB%AF%B8%EB%94%94%EC%96%B4-%EC%97%B0%EB%8F%99-%EC%A0%95%EB%B3%B4-%EC%9E%85%EB%A0%A5%ED%95%98%EA%B8%B0)을 전송합니다.
+- 링크 : [포스트백 API DOCUMENT](https://github.com/GPA-KOREA/gad-sample-android/blob/main/api-doc.md#%ED%8F%AC%EC%8A%A4%ED%8A%B8%EB%B0%B1)
 
