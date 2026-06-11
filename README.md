@@ -54,9 +54,7 @@ allprojects {
 }
 ```
 - 모듈 수준의 build.gradle 파일에 GAD 종속성을 추가합니다.
-    - {version}란에 아래 버전명(녹색 배경의 흰색 글자)을 기입한다.
-
-[![](https://jitpack.io/v/koreagpa-dev/gad.svg)](https://jitpack.io/#koreagpa-dev/gad)
+    
 ```groovy
 dependencies {
     implementation 'com.github.koreagpa-dev:gad:0.7.2'
