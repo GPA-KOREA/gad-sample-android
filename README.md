@@ -59,7 +59,7 @@ allprojects {
 [![](https://jitpack.io/v/koreagpa-dev/gad.svg)](https://jitpack.io/#koreagpa-dev/gad)
 ```groovy
 dependencies {
-    implementation 'com.github.koreagpa-dev:gad:{version}'
+    implementation 'com.github.koreagpa-dev:gad:0.7.2'
 }
 ```
 #### GAD 초기화 및 실행
