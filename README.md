@@ -4,6 +4,8 @@
 - GAD 오퍼월 사이트에 앱 등록은 [GAD 미디어 설정하기](https://github.com/koreagpa-dev/gad-sample-android/blob/master/guide_media.md#gad-%EB%AF%B8%EB%94%94%EC%96%B4-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0) 페이지를 참고 바랍니다.
 - API 문서는 [GAD API DOCUMENT](https://github.com/koreagpa-dev/gad-sample-android/blob/main/api-doc.md#gad-api-document), [CPA 연동](https://github.com/koreagpa-dev/gad-sample-android/blob/master/guide_cpa.md#gad-cpa-%EC%97%B0%EB%8F%99-%EA%B0%80%EC%9D%B4%EB%93%9C) 페이지를 참고 바랍니다.
 
+> 📌 이 브랜치(`kotlin`)는 **Kotlin 기반** 샘플 코드입니다. Java 버전은 `main` 브랜치를 참고하세요.
+
 ## AndroidX 마이그레이션
 - 기존의 SupportLibrary는 더 이상 업데이트가 이루어지지 않으며 AndroidX 라는 이름으로 대체되었습니다.
 - 주된 변경 사항중 하나는 기존에 v4, v7, v13 등으로 나눠져 있던 부분을 androidx라는 문자열로 시작하는 네임스페이스로 통일 됐습니다.
@@ -16,6 +18,12 @@
 - 모듈 수준의 build.gradle 파일에서 아래 코드를 추가합니다.
 
 ```groovy
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'   // dataBinding 사용 시 필요
+}
+
 android {
     defaultConfig {
         multiDexEnabled true
@@ -26,6 +34,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 ```
@@ -47,6 +58,13 @@ android {
 - GAD SDK는 [JitPack](https://jitpack.io/) 원격 저장소를 가지고 있습니다.
 - 프로젝트 수준의 build.gradle 파일에 저장소르 추가합니다.
 ```groovy
+buildscript {
+    dependencies {
+        // Kotlin Gradle 플러그인
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0'
+    }
+}
+
 allprojects {
     repositories {
         maven { url 'https://jitpack.io' }
@@ -64,27 +82,27 @@ dependencies {
 - GAD SDK를 사용하기 위해서는 가장 먼저 초기화 함수를 호출해야 합니다.
 - GAD는 새창(액티비티) 형태와 인레이아웃(프레그먼트) 형식을 모두 지원합니다.
 - 샘플앱은 MEDIA KEY와 USER ID 변경 테스트를 위한 코드를 포함하고 있으며 GAD SDK 연동을 위한 코드는 아래와 같습니다.
-```java
-public class MainActivity extends AppCompatActivity {
-    
+```kotlin
+class MainActivity : AppCompatActivity() {
+
     // GAD 초기화 함수. 가장 먼저 호출 필요
     // (로그인 후 1회만) 앱 로그인 완료 후 미디어키와 유저ID(유저를 식별할 수 있는 유니크한 값)로 초기화 한다.
-    private void initializeGad(String mediaKey, String userId) {
-        Gad.init(this, mediaKey, userId);
+    private fun initializeGad(mediaKey: String, userId: String) {
+        Gad.init(this, mediaKey, userId)
         // (Optional) 고객의 성별, 나이를 알고 있다면 아래 설정을 통해 타겟팅 된 광고를 받아 볼 수 있다.
-        Gad.setUserInfo("M", 22);
+        Gad.setUserInfo("M", 22)
     }
 
     // 새창(액티비티)으로 GAD를 보여준다.
-    private void startGadActivity() {
-        Gad.showAdList(this);
+    private fun startGadActivity() {
+        Gad.showAdList(this)
     }
 
     // GAD Fragment를 보여준다.
-    private void showGadFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, Gad.getAdListFragment(this))
-                .commitAllowingStateLoss();
+    private fun showGadFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment, Gad.getAdListFragment(this))
+            .commitAllowingStateLoss()
     }
 }
 ```
@@ -93,19 +111,20 @@ public class MainActivity extends AppCompatActivity {
 - 링크 : [포스트백 API DOCUMENT](https://github.com/koreagpa-dev/gad-sample-android/blob/master/api-doc.md#%ED%8F%AC%EC%8A%A4%ED%8A%B8%EB%B0%B1)
 
 #### SDK API 21 미만 버전 및 에러 대응
-```java
-public class MyApplication extends Application {
-    
-    static {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+```kotlin
+class MyApplication : Application() {
+
+    companion object {
+        init {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+            }
         }
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 }
 ```
@@ -124,30 +143,30 @@ dependencies {
 
 #### widevine ID 값 얻기
 - API 18 이상이며 구글플레이가 설치된 디바이스에서 사용가능합니다.
-```java
-public static String getWidevineId() {
+```kotlin
+fun getWidevineId(): String {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-        return "";
+        return ""
     }
-    UUID WIDEVINE_UUID = new UUID(0xEDEF8BA979D64ACEL, 0xA3C827DCD51D21EDL);
-    MediaDrm mediaDrm = null;
-    String widevineId = null;
+    val widevineUuid = UUID(0xEDEF8BA979D64ACEuL.toLong(), 0xA3C827DCD51D21EDuL.toLong())
+    var mediaDrm: MediaDrm? = null
+    var widevineId: String? = null
     try {
-        mediaDrm = new MediaDrm(WIDEVINE_UUID);
-        byte[] arrUniqueId = mediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID);
-        widevineId = Base64.encodeToString(arrUniqueId, Base64.NO_WRAP).trim();
-    } catch (Exception e) {
-        e.printStackTrace();
+        mediaDrm = MediaDrm(widevineUuid)
+        val arrUniqueId = mediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID)
+        widevineId = Base64.encodeToString(arrUniqueId, Base64.NO_WRAP).trim()
+    } catch (e: Exception) {
+        e.printStackTrace()
     } finally {
         if (mediaDrm != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                mediaDrm.close();
+                mediaDrm.close()
             } else {
-                mediaDrm.release();
+                mediaDrm.release()
             }
         }
     }
-    return widevineId != null ? widevineId : "";
+    return widevineId ?: ""
 }
 ```
 
@@ -156,21 +175,20 @@ public static String getWidevineId() {
 - 2019.12.24 Gad.goDetail 메소드가 Deprecated 됐습니다.
 - GAD 광고 참여시 내부 로직을 사용하므로 SDK 연동은 동일하게 필요합니다.
 - 최종적으로 광고페이지로 이동하고자 할때 Gad.join(Context context, String adKey)를 호출하면 됩니다.
-```java
-public class MainActivity extends AppCompatActivity {
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         ...
-        Gad.init(this, mediaKey, userId);
+        Gad.init(this, mediaKey, userId)
         // 고객의 성별, 나이를 알고 있다면 아래 설정을 통해 타겟팅 된 광고를 받아 볼 수 있다.
-        Gad.setUserInfo("M", 22);
-        // Gad.setProgressAnimation(false);
+        Gad.setUserInfo("M", 22)
+        // Gad.setProgressAnimation(false)
     }
 
     // Gad광고를 수행하기 위해서는 광고참여신청 후 아래와 같이 SDK를 통해 광고페이지로 이동시킨다.
-    private void join(String adKey) {
-        Gad.join(MainActivity.this, adKey);
+    private fun join(adKey: String) {
+        Gad.join(this, adKey)
     }
 }
 ```
