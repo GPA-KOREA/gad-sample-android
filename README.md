@@ -57,7 +57,7 @@ allprojects {
     
 ```groovy
 dependencies {
-    implementation 'com.github.koreagpa-dev:gad:0.7.4'
+    implementation 'com.github.koreagpa-dev:gad:0.7.5'
 }
 ```
 #### GAD 초기화 및 실행
