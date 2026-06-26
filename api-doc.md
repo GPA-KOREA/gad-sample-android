@@ -60,6 +60,7 @@
 | 0    | DGF                       | 당근마켓단골맺기          |
 | 0    | TGJ                       | 텔레그램한국인사용자        |
 | 0    | CPQ                       | 퀴즈형               |
+| 0    | DCJ                       | 디스코드채널가입          |
 | 1    | CPI                       | 설치형               |
 | 3    | MISSION_INSTAGRAM_COMMENT | 인스타댓글             |
 | 3    | MISSION_YOUTUBE_COMMENT   | 유튜브댓글             |
