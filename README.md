@@ -45,7 +45,7 @@ allprojects {
 
 ```groovy
 dependencies {
-    implementation 'com.github.koreagpa-dev:gad:syrup-0.8.0-rc.8'
+    implementation 'com.github.koreagpa-dev:gad:syrup-0.8.0-rc.9'
 }
 ```
 #### GAD 초기화 및 실행
