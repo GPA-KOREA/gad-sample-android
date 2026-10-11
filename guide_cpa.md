@@ -1,30 +1,5 @@
-# GAD CPA 연동 가이드
-- 유저가 GAD에 참여신청을 하게되면 gad_tracking_id가 발급됩니다.
-- GAD를 통해 광고 페이지로 이동시 URL에 이 gad_tracking_id 파라미터가 포함되게 됩니다.
-- 플레이스토어 연동시에는 install_referrer 값으로 gad_tracking_id=ck67hq6zo08pl07042zyi5jja 와 같은 값이 넘어갑니다. (value:ck67hq6zo08pl07042zyi5jja)
-- 플레이스토어 연동은 [공식문서(Google Play 설치 리퍼러)](https://developer.android.com/google/play/installreferrer) 를 참고 바랍니다.
-- 유저의 액션이 완료됐을때 GAD 서버로 gad_tracking_id 값을 전송합니다.
-- GAD가 액션 완료를 수신하면 gad_tracking_id 값에 따라 포스트백을 등록합니다.
+# CPA 문서 안내
 
-## CPA 완료 통지
-#### URL : https://gad.api.gpakorea.com/advertisement/comp
-#### REQUEST (POST)
-| 파라미터 | 내용 |
-| --- | --- |
-| gad_tracking_id | GAD 트래킹 ID (광고 참여 신청시마다 발급) |
-#### RESPONSE
-| 파라미터 | 내용 |
-| --- | --- |
-| code | 결과 CODE |
-| message | 결과 메시지 |
+이 저장소의 과거 `advertisement/comp` 완료 통지 예시는 최신 연동 계약으로 사용하지 마세요. 광고주의 CPA 완료 통지는 Android SDK 화면 연결과 별도 범위이며 이 샘플은 구현하지 않습니다.
 
-- 참고 : [결과코드](https://github.com/koreagpa-dev/gad-sample-android/blob/master/api-doc.md#%EA%B2%B0%EA%B3%BC-%EC%BD%94%EB%93%9C)
-
-
-## CPA 완료 통지 (Deprecated)
-#### URL : https://gad.api.gpakorea.com/advertisement/comp
-#### REQUEST (POST)
-| 파라미터 | 내용 |
-| --- | --- |
-| ai | GAD 광고 ID (광고 등록시 발급) |
-| uid | 유저 식별 코드 (adid) |
+현재 제공 범위와 연동 절차는 [서버 API 가이드 (준비 중)](https://developers-staging.gpakorea.com/developers/guide/api)를 확인해 주세요. 과거 문서만으로 지원을 가정하지 마세요.

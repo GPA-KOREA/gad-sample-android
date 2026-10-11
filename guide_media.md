@@ -1,19 +1,7 @@
-# GAD 미디어 설정하기
-- GAD 사이트 : http://gad.gpakorea.com
-- 이 문서는 GAD 광고를 연동하기 위해 사이트에서 수행해야 할 설정을 가이드하는 문서 입니다.
-- 사이트 각 메뉴 하단에도 설명란이 있으니 참고 바랍니다. 
+# 매체 설정 문서 안내
 
-## 미디어 등록하기
--  앱관리 > 앱리스트 메뉴를 통해 어플리케이션(이하 미디어)를 등록 할 수 있다.
+이 저장소에 있던 과거 관리자 화면 및 HTTP 주소 기반 설정 가이드는 제거했습니다. Media Key와 매체 설정은 [Staging 콘솔](https://developers-staging.gpakorea.com/developers/console), 콜백 URL 설정은 [현재 포스트백 가이드](https://developers-staging.gpakorea.com/developers/guide/postback)를 확인해 주세요.
 
-![](https://s3.ap-northeast-2.amazonaws.com/com.gad.sdk/upload/2019-08-06/097c36e4-7729-41e7-a8d0-e519661f7f30-guide-regist-media.png)
+이 샘플은 Staging 전용입니다. Staging에서 발급한 Media Key와 연동 앱의 로그인 사용자 uid를 사용하며, 개발자 포털 계정 ID를 uid로 사용하지 않습니다.
 
-## 미디어 연동 정보 입력하기
-- 앱 등록 완료 후 연동 정보를 입력 합니다.
-
-![](https://s3.ap-northeast-2.amazonaws.com/com.gad.sdk/upload/2019-08-06/937e5856-7699-45e9-86ce-f2b55e9d5fe4-guide-media-setting.png)
-
-
-- 개발사 IP는 API 방식을 사용할 경우에만 입력 합니다.
-    - 여기에 입력된 IP는 GAD API를 호출하는 개발사 서버 IP이어야 하며 이 IP가 화이트리스트에 등록 됩니다.
-
+광고 완료 테스트 전에 콜백 수신 서버와 허용 호스트 설정을 준비하고 해당 환경의 매체에 콜백 URL을 등록하세요. 완료 후 콜백을 등록해도 과거 완료 건이 자동 재전송되지 않습니다. 운영 설정은 별도로 준비한 뒤 명시적으로 환경을 변경해야 합니다.

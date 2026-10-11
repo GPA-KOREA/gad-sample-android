@@ -12,6 +12,7 @@ android {
         versionCode 17
         versionName "1.3.2"
         multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         android.applicationVariants.all { variant ->
@@ -38,6 +39,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    lint {
+        lintConfig file('lint.xml')
+    }
 }
 
 dependencies {
@@ -59,5 +63,8 @@ dependencies {
             strictly "3.12.8"
         }
     }
-    implementation 'com.github.koreagpa-dev:gad:0.7.7'
+    implementation 'com.github.koreagpa-dev:gad:0.9.0'
+    androidTestImplementation 'androidx.test:core:1.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
 }

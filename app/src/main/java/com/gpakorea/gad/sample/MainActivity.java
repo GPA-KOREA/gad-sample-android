@@ -2,8 +2,11 @@ package com.gpakorea.gad.sample;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 
 import com.gad.sdk.Gad;
+import com.gad.sdk.GadEnvironment;
 import com.gpakorea.gad.sample.databinding.ActivityMainBinding;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,62 +15,85 @@ import androidx.databinding.DataBindingUtil;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mBinding;
+    private boolean initialized;
     
-    private String MEDIA_KEY = "{INSERT_MEDIA_KEY}";
-    private String USER_ID = "{INSERT_USER_ID}";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        // A new sample screen requires fresh input and explicit initialization.
+        // Do not restore an SDK fragment with credentials from a previous screen.
+        super.onCreate(null);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        mBinding.mediaKey.setText(MEDIA_KEY);
-        mBinding.userId.setText(USER_ID);
+        TextWatcher credentialWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                invalidateSession();
+            }
+            @Override public void afterTextChanged(Editable s) { }
+        };
+        mBinding.mediaKey.addTextChangedListener(credentialWatcher);
+        mBinding.userId.addTextChangedListener(credentialWatcher);
+        mBinding.buttonInitialize.setOnClickListener(v -> initializeGad());
 
         mBinding.buttonActivity.setOnClickListener(v -> {
-            if (checkField()) {
-                initializeGad();
+            if (initialized) {
                 Gad.showAdList(this);
             }
         });
 
         mBinding.buttonFragment.setOnClickListener(v -> {
-            if (checkField()) {
-                initializeGad();
+            if (initialized) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment, Gad.getAdListFragment(this))
-                        .commitAllowingStateLoss();
+                        .commit();
             }
         });
-
-        Gad.init(this, MEDIA_KEY, USER_ID);
-
-        initializeGad();
     }
 
-    private boolean checkField() {
-        MEDIA_KEY = mBinding.mediaKey.getText().toString();
-        USER_ID = mBinding.userId.getText().toString();
-        
-        if (TextUtils.isEmpty(MEDIA_KEY)) {
-            mBinding.mediaKeyLayout.setError("{MEDIA KEY}를 입력해 주세요.");
-            return false;
-        } else {
-            mBinding.mediaKeyLayout.setErrorEnabled(false);
-        }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // This integration sample intentionally does not restore a session or view state.
+        outState.clear();
+    }
 
-        if (TextUtils.isEmpty(USER_ID)) {
-            mBinding.userIdLayout.setError("{USER ID}를 입력해 주세요.");
-            return false;
-        } else {
-            mBinding.userIdLayout.setErrorEnabled(false);
-        }
-        return true;
+    private String inputText(CharSequence text) {
+        return text == null ? "" : text.toString().trim();
     }
 
     private void initializeGad() {
-        Gad.init(this, MEDIA_KEY, USER_ID);
-//        Gad.setUserInfo("M", 22);
-//        Gad.setProgressAnimation(false);
+        String mediaKey = inputText(mBinding.mediaKey.getText());
+        String appUid = inputText(mBinding.userId.getText());
+        boolean missingMediaKey = isMissingInput(mediaKey);
+        boolean missingAppUid = isMissingInput(appUid);
+        boolean invalidAppUidLength = appUid.length() > 48;
+        mBinding.mediaKeyLayout.setError(missingMediaKey ? getString(R.string.media_key_required) : null);
+        mBinding.userIdLayout.setError(missingAppUid ? getString(R.string.app_uid_required)
+                : invalidAppUidLength ? getString(R.string.app_uid_too_long) : null);
+        if (missingMediaKey || missingAppUid || invalidAppUidLength) {
+            return;
+        }
+
+        // This sample always selects staging explicitly; see README for production opt-in.
+        Gad.init(this, mediaKey, appUid, GadEnvironment.STAGING);
+        initialized = true;
+        mBinding.buttonInitialize.setEnabled(false);
+        mBinding.buttonActivity.setEnabled(true);
+        mBinding.buttonFragment.setEnabled(true);
+    }
+
+    private void invalidateSession() {
+        initialized = false;
+        mBinding.buttonInitialize.setEnabled(true);
+        mBinding.buttonActivity.setEnabled(false);
+        mBinding.buttonFragment.setEnabled(false);
+        androidx.fragment.app.Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
+        }
+    }
+
+    private boolean isMissingInput(String value) {
+        return TextUtils.isEmpty(value) || (value.startsWith("{") && value.endsWith("}"));
     }
 }
