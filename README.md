@@ -1,176 +1,84 @@
-# GAD SDK 연동하기
+# GAD Android SDK 0.9.0 샘플
 
-- 이 프로젝트는 GAD SDK를 적용한 샘플앱으로 아래 가이드 한 내용을 포함하고 있습니다.
-- GAD 오퍼월 사이트에 앱 등록은 [GAD 미디어 설정하기](https://github.com/koreagpa-dev/gad-sample-android/blob/master/guide_media.md#gad-%EB%AF%B8%EB%94%94%EC%96%B4-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0) 페이지를 참고 바랍니다.
-- API 문서는 [GAD API DOCUMENT](https://github.com/koreagpa-dev/gad-sample-android/blob/main/api-doc.md#gad-api-document), [CPA 연동](https://github.com/koreagpa-dev/gad-sample-android/blob/master/guide_cpa.md#gad-cpa-%EC%97%B0%EB%8F%99-%EA%B0%80%EC%9D%B4%EB%93%9C) 페이지를 참고 바랍니다.
+외부 앱 개발자가 GAD SDK의 초기화와 오퍼월 화면 연결을 확인하는 Android 샘플입니다. **이 샘플은 `GadEnvironment.STAGING`을 명시적으로 사용합니다.** 앱 실행만으로 SDK를 초기화하거나 오퍼월을 열지 않습니다.
 
-## AndroidX 마이그레이션
-- 기존의 SupportLibrary는 더 이상 업데이트가 이루어지지 않으며 AndroidX 라는 이름으로 대체되었습니다.
-- 주된 변경 사항중 하나는 기존에 v4, v7, v13 등으로 나눠져 있던 부분을 androidx라는 문자열로 시작하는 네임스페이스로 통일 됐습니다.
-- Android 스튜디오 3.2 이상에서는 메뉴 바에서 리펙터링 > AndroidX로 이전을 선택하여 AndroidX를 사용하도록 기존 프로젝트를 빠르게 이전할 수 있습니다.
-- 참고 사이트
-    - AndroidX 개요 : https://developer.android.com/jetpack/androidx?hl=ko
-    - AndroidX로 이전 : https://developer.android.com/jetpack/androidx/migrate#migrate
+현재 연동 기준은 [Android SDK 가이드](https://developers-staging.gpakorea.com/developers/guide/sdk/android)입니다. 이 저장소의 예제보다 해당 가이드의 최신 계약을 우선해 주세요.
 
-## Gradle 설정
-- 모듈 수준의 build.gradle 파일에서 아래 코드를 추가합니다.
+## 빌드와 실행
 
-```groovy
-android {
-    defaultConfig {
-        multiDexEnabled true
-    }
-    buildFeatures {
-        dataBinding = true
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
+- Android Studio 또는 JDK 17, Android SDK Platform 35가 필요합니다. Gradle Wrapper 8.10.2 / Android Gradle Plugin 8.7.3을 사용합니다.
+- 지원 OS는 Android API 23 이상입니다. AndroidX, Jetifier, Data Binding, Java 8 설정은 이미 포함되어 있습니다.
+- Android Studio에서 프로젝트를 열고 SDK 위치를 지정하거나, 로컬의 `ANDROID_HOME`을 설정합니다. `local.properties`는 커밋하지 않습니다.
+- Media Key 없이 빌드하고 설치할 수 있습니다.
+
+```bash
+./gradlew :app:assembleDebug
+./gradlew :app:installDebug
 ```
 
-## TargetSdkVersion 33 (Android 13) 이상인 경우
-- 매니페스트 파일에서 Google Play 서비스 일반 권한을 다음과 같이 선언해야 합니다.
-```xml
-<uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
-```
+1. [Staging 콘솔](https://developers-staging.gpakorea.com/developers/console)에서 **Android·SDK 테스트 매체**를 준비하고 해당 **Media Key**를 입력합니다. 서버 API용 키나 환경이 다른 키는 사용하지 않습니다.
+2. 연동할 앱에서 로그인한 사용자의 안정적인 **uid(최대 48자)**를 입력합니다. 개발자 포털 계정 ID, 이메일, 광고 ID를 대신 넣지 마세요.
+3. **Staging SDK 초기화**를 누릅니다. 빈 값, 공백, `{...}` 예시 값, 48자를 초과하는 uid는 초기화를 막습니다.
+4. 초기화 후 **액티비티로 열기** 또는 **프래그먼트로 열기**를 선택합니다. 반복해서 열어도 같은 입력값으로 SDK를 다시 초기화하지 않습니다.
+5. 입력을 바꾸면 열기 버튼을 비활성화하고 기존 내장 프래그먼트를 제거합니다. 바뀐 값으로 다시 초기화한 뒤 열어 주세요.
 
-## 참고 사이트
-- MultiDex : https://developer.android.com/studio/build/multidex.html?hl=ko
-- 데이터바인딩 : https://developer.android.com/topic/libraries/data-binding/start.html?hl=ko
-- Java 8 : https://developer.android.com/studio/write/java8-support?hl=ko
-- AD_ID : https://support.google.com/googleplay/android-developer/answer/6048248?hl=ko
+화면 회전이나 프로세스 재시작으로 샘플 화면이 다시 만들어지면 입력값과 SDK 화면을 복원하지 않습니다. 다시 입력하고 초기화해 주세요.
 
-## GAD SDK 라이브러리 사용
-#### 프로젝트 설정
-- GAD SDK는 [JitPack](https://jitpack.io/) 원격 저장소를 가지고 있습니다.
-- 프로젝트 수준의 build.gradle 파일에 저장소르 추가합니다.
+저장소에 실제 Media Key나 개인 uid를 넣지 마세요. 샘플은 별도 입력값 저장 기능을 제공하지 않으며 화면 상태 복원에도 입력값을 저장하지 않습니다. SDK 0.9.0은 초기화 정보를 앱 내부 SharedPreferences에 저장합니다. 테스트 세션을 완전히 지우려면 앱 데이터를 삭제하거나 앱을 제거하세요.
+
+## 실제 SDK 연동 코드
+
+공개 JitPack 아티팩트를 사용하며 로컬 AAR 파일은 필요하지 않습니다.
+
 ```groovy
+// 루트 build.gradle
 allprojects {
     repositories {
+        google()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
 }
+
+// app/build.gradle
+implementation 'com.github.koreagpa-dev:gad:0.9.0'
 ```
-- 모듈 수준의 build.gradle 파일에 GAD 종속성을 추가합니다.
-    
-```groovy
-dependencies {
-    implementation 'com.github.koreagpa-dev:gad:0.7.7'
-}
-```
-#### GAD 초기화 및 실행
-- GAD SDK를 사용하기 위해서는 가장 먼저 초기화 함수를 호출해야 합니다.
-- GAD는 새창(액티비티) 형태와 인레이아웃(프레그먼트) 형식을 모두 지원합니다.
-- 샘플앱은 MEDIA KEY와 USER ID 변경 테스트를 위한 코드를 포함하고 있으며 GAD SDK 연동을 위한 코드는 아래와 같습니다.
+
+앱 로그인 후 해당 환경의 Media Key와 앱 사용자 uid를 확보한 시점에 초기화합니다. 환경 설정과 초기화를 한 곳에 모으세요.
+
 ```java
-public class MainActivity extends AppCompatActivity {
-    
-    // GAD 초기화 함수. 가장 먼저 호출 필요
-    // (로그인 후 1회만) 앱 로그인 완료 후 미디어키와 유저ID(유저를 식별할 수 있는 유니크한 값)로 초기화 한다.
-    private void initializeGad(String mediaKey, String userId) {
-        Gad.init(this, mediaKey, userId);
-        // (Optional) 고객의 성별, 나이를 알고 있다면 아래 설정을 통해 타겟팅 된 광고를 받아 볼 수 있다.
-        Gad.setUserInfo("M", 22);
-    }
+import com.gad.sdk.Gad;
+import com.gad.sdk.GadEnvironment;
 
-    // 새창(액티비티)으로 GAD를 보여준다.
-    private void startGadActivity() {
-        Gad.showAdList(this);
-    }
+// 로그인 후 한 번 초기화. 실제 값은 앱의 인증/설정 흐름에서 전달합니다.
+Gad.init(this, mediaKey, appUid, GadEnvironment.STAGING);
 
-    // GAD Fragment를 보여준다.
-    private void showGadFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, Gad.getAdListFragment(this))
-                .commitAllowingStateLoss();
-    }
-}
+// 초기화 후 액티비티로 열기
+Gad.showAdList(this);
+
+// 또는 화면의 컨테이너에 프래그먼트로 연결
+getSupportFragmentManager().beginTransaction()
+        .replace(R.id.fragment, Gad.getAdListFragment(this))
+        .commit();
 ```
 
-- 광고 참여를 완료하면 [미디어에 등록된 URL로 포스트백](https://github.com/koreagpa-dev/gad-sample-android/blob/master/guide_media.md#%EB%AF%B8%EB%94%94%EC%96%B4-%EC%97%B0%EB%8F%99-%EC%A0%95%EB%B3%B4-%EC%9E%85%EB%A0%A5%ED%95%98%EA%B8%B0)을 전송합니다.
-- 링크 : [포스트백 API DOCUMENT](https://github.com/koreagpa-dev/gad-sample-android/blob/master/api-doc.md#%ED%8F%AC%EC%8A%A4%ED%8A%B8%EB%B0%B1)
+`STAGING`은 `https://gad-staging.gpakorea.com/`으로 연결됩니다. SDK 화면의 STAGING 표시와 `GPADEV` logcat으로 환경을 확인할 수 있습니다. 공개 SDK 0.9.0의 오퍼월 목록/상세에는 `FLAG_SECURE`가 적용되므로 디버그 빌드에서도 캡처가 제한될 수 있습니다.
 
-#### SDK API 21 미만 버전 및 에러 대응
-```java
-public class MyApplication extends Application {
-    
-    static {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        }
-    }
+운영 전환은 의도적인 코드 변경으로만 수행합니다. 운영 Media Key와 운영 콜백 설정을 준비한 뒤 초기화 호출을 `GadEnvironment.PRODUCTION`으로 바꾸세요. 샘플의 Staging 안내 문구도 함께 변경해야 합니다. **환경 인자를 생략하는 3인자 `Gad.init`은 Production 기본값**이며, 뒤에서 다시 호출하면 Staging 선택이 Production으로 바뀝니다. deprecated `Gad.useDebugServer`와 환경 enum을 섞지 마세요. 이 샘플의 검증에는 운영 SDK 호출이나 광고 참여가 필요하지 않습니다.
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
-}
-```
-```groovy
-dependencies {
-    implementation 'androidx.multidex:multidex:2.0.1'
-    /* okhttp 3.13부터 API 21+ 만 지원 */
-    implementation('com.squareup.okhttp3:logging-interceptor:3.12.8') {
-        force = true
-    }
-    implementation("com.squareup.okhttp3:okhttp:3.12.8") {
-        force = true
-    }
-}
-```
+## 콜백 준비와 샘플 범위
 
-#### widevine ID 값 얻기
-- API 18 이상이며 구글플레이가 설치된 디바이스에서 사용가능합니다.
-```java
-public static String getWidevineId() {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-        return "";
-    }
-    UUID WIDEVINE_UUID = new UUID(0xEDEF8BA979D64ACEL, 0xA3C827DCD51D21EDL);
-    MediaDrm mediaDrm = null;
-    String widevineId = null;
-    try {
-        mediaDrm = new MediaDrm(WIDEVINE_UUID);
-        byte[] arrUniqueId = mediaDrm.getPropertyByteArray(MediaDrm.PROPERTY_DEVICE_UNIQUE_ID);
-        widevineId = Base64.encodeToString(arrUniqueId, Base64.NO_WRAP).trim();
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        if (mediaDrm != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                mediaDrm.close();
-            } else {
-                mediaDrm.release();
-            }
-        }
-    }
-    return widevineId != null ? widevineId : "";
-}
-```
+광고 완료 테스트 전에 HTTPS 콜백 수신 서버와 Staging 호스트 허용 설정을 준비하고, 선택한 환경에서 콜백 URL을 등록한 뒤 콘솔의 `허용됨` 상태를 확인해야 합니다. 완료 당시 콜백 URL이 없으면 나중에 등록해도 해당 완료 건이 자동 재전송되지 않습니다. 같은 사용자/기기에서 완료한 광고의 재참여도 제한됩니다. [포스트백 가이드](https://developers-staging.gpakorea.com/developers/guide/postback)와 [테스트 가이드](https://developers-staging.gpakorea.com/developers/guide/testing)의 현재 계약을 먼저 확인하세요.
 
-#### API 방식 사용시 (Deprecated)
-- SDK를 이용한 API 방식 지원이 종료됐습니다.
-- 2019.12.24 Gad.goDetail 메소드가 Deprecated 됐습니다.
-- GAD 광고 참여시 내부 로직을 사용하므로 SDK 연동은 동일하게 필요합니다.
-- 최종적으로 광고페이지로 이동하고자 할때 Gad.join(Context context, String adKey)를 호출하면 됩니다.
-```java
-public class MainActivity extends AppCompatActivity {
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        ...
-        Gad.init(this, mediaKey, userId);
-        // 고객의 성별, 나이를 알고 있다면 아래 설정을 통해 타겟팅 된 광고를 받아 볼 수 있다.
-        Gad.setUserInfo("M", 22);
-        // Gad.setProgressAnimation(false);
-    }
+이 샘플은 SDK 화면 연결을 보여 줍니다. 콜백 수신 서버, 포인트 적립/중복 방지, 광고주의 CPA 완료 통지, 서버 API 클라이언트는 구현하지 않습니다. [서버 API 가이드](https://developers-staging.gpakorea.com/developers/guide/api)는 현재 준비 중입니다. SDK 연동을 서버 API 지원으로 해석하지 마세요. 과거 API/CPA/매체 설정 문서는 최신 가이드 링크로 대체했습니다.
 
-    // Gad광고를 수행하기 위해서는 광고참여신청 후 아래와 같이 SDK를 통해 광고페이지로 이동시킨다.
-    private void join(String adKey) {
-        Gad.join(MainActivity.this, adKey);
-    }
-}
+Staging 설치·미션 fixture는 실제 설치·리뷰 완료를 보장하지 않으며, CPS도 외부 구매 확정·취소·리워드 전체 검증을 대신하지 않습니다. 연동 문의: `jyi4@gpakorea.com`.
+
+## 키 없이 검증
+
+새 에뮬레이터 또는 샘플 앱 데이터를 삭제한 테스트 기기에서 아래 검증을 실행할 수 있습니다. 테스트는 빈 입력, 공백, 예시 값, 누락된 필드, uid 길이 제한, 열기 버튼 차단과 화면 재생성 후 초기 상태를 확인하며 SDK를 초기화하거나 광고 요청을 보내지 않습니다. 테스트용 가짜 문자열은 실제 Media Key와 함께 사용되지 않습니다.
+
+```bash
+./gradlew :app:assembleDebug :app:assembleDebugAndroidTest
+./gradlew :app:connectedDebugAndroidTest
 ```
