@@ -2,7 +2,7 @@
 
 외부 앱 개발자가 GAD SDK의 초기화와 오퍼월 화면 연결을 확인하는 Android 샘플입니다. **이 샘플은 `GadEnvironment.STAGING`을 명시적으로 사용합니다.** 앱 실행만으로 SDK를 초기화하거나 오퍼월을 열지 않습니다.
 
-현재 연동 기준은 [Android SDK 가이드](https://developers-staging.gpakorea.com/developers/guide/sdk/android)입니다. 이 저장소의 예제보다 해당 가이드의 최신 계약을 우선해 주세요.
+현재 연동 기준은 [Android SDK 가이드](https://developers.gpakorea.com/developers/guide/sdk/android)입니다. 이 저장소의 예제보다 해당 가이드의 최신 계약을 우선해 주세요.
 
 ## 빌드와 실행
 
@@ -16,7 +16,7 @@
 ./gradlew :app:installDebug
 ```
 
-1. [Staging 콘솔](https://developers-staging.gpakorea.com/developers/console)에서 **Android·SDK 테스트 매체**를 준비하고 해당 **Media Key**를 입력합니다. 서버 API용 키나 환경이 다른 키는 사용하지 않습니다.
+1. [개발자 콘솔](https://developers.gpakorea.com/developers/console)에서 **Android·SDK 테스트 매체**를 준비하고 해당 **Media Key**를 입력합니다. 서버 API용 키나 환경이 다른 키는 사용하지 않습니다.
 2. 연동할 앱에서 로그인한 사용자의 안정적인 **uid(최대 48자)**를 입력합니다. 개발자 포털 계정 ID, 이메일, 광고 ID를 대신 넣지 마세요.
 3. **Staging SDK 초기화**를 누릅니다. 빈 값, 공백, `{...}` 예시 값, 48자를 초과하는 uid는 초기화를 막습니다.
 4. 초기화 후 **액티비티로 열기** 또는 **프래그먼트로 열기**를 선택합니다. 반복해서 열어도 같은 입력값으로 SDK를 다시 초기화하지 않습니다.
@@ -68,9 +68,9 @@ getSupportFragmentManager().beginTransaction()
 
 ## 콜백 준비와 샘플 범위
 
-광고 완료 테스트 전에 HTTPS 콜백 수신 서버와 Staging 호스트 허용 설정을 준비하고, 선택한 환경에서 콜백 URL을 등록한 뒤 콘솔의 `허용됨` 상태를 확인해야 합니다. 완료 당시 콜백 URL이 없으면 나중에 등록해도 해당 완료 건이 자동 재전송되지 않습니다. 같은 사용자/기기에서 완료한 광고의 재참여도 제한됩니다. [포스트백 가이드](https://developers-staging.gpakorea.com/developers/guide/postback)와 [테스트 가이드](https://developers-staging.gpakorea.com/developers/guide/testing)의 현재 계약을 먼저 확인하세요.
+광고 완료 테스트 전에 HTTPS 콜백 수신 서버와 Staging 호스트 허용 설정을 준비하고, 선택한 환경에서 콜백 URL을 등록한 뒤 콘솔의 `허용됨` 상태를 확인해야 합니다. 완료 당시 콜백 URL이 없으면 나중에 등록해도 해당 완료 건이 자동 재전송되지 않습니다. 같은 사용자/기기에서 완료한 광고의 재참여도 제한됩니다. [포스트백 가이드](https://developers.gpakorea.com/developers/guide/postback)와 [테스트 가이드](https://developers.gpakorea.com/developers/guide/testing)의 현재 계약을 먼저 확인하세요.
 
-이 샘플은 SDK 화면 연결을 보여 줍니다. 콜백 수신 서버, 포인트 적립/중복 방지, 광고주의 CPA 완료 통지, 서버 API 클라이언트는 구현하지 않습니다. [서버 API 가이드](https://developers-staging.gpakorea.com/developers/guide/api)는 현재 준비 중입니다. SDK 연동을 서버 API 지원으로 해석하지 마세요. 과거 API/CPA/매체 설정 문서는 최신 가이드 링크로 대체했습니다.
+Android 앱 샘플은 SDK 화면 연결을 보여 줍니다. 콜백 통신 시험에는 별도의 [Node.js 포스트백 수신 예제](examples/postback-receiver/README.md)를 실행할 수 있습니다. 수신 예제는 실제 포인트를 지급하지 않으며, 운영 지급에는 영속 저장소의 중복 방지와 지급 처리가 필요합니다. Android 앱에는 포인트 적립, 광고주의 CPA 완료 통지, 서버 API 클라이언트가 포함되지 않습니다. [서버 API 가이드](https://developers.gpakorea.com/developers/guide/api)는 현재 준비 중입니다. SDK 연동을 서버 API 지원으로 해석하지 마세요. 과거 API/CPA/매체 설정 문서는 최신 가이드 링크로 대체했습니다.
 
 Staging 설치·미션 fixture는 실제 설치·리뷰 완료를 보장하지 않으며, CPS도 외부 구매 확정·취소·리워드 전체 검증을 대신하지 않습니다. 연동 문의: `jyi4@gpakorea.com`.
 
